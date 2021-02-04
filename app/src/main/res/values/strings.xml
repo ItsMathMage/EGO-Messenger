@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">EGO Messenger</string>
+    <string name="bar">EGO</string>
+    <string name="version">v1.0.4</string>
 </resources>
