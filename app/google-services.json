@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "77173735722",
+    "project_id": "ego-messenger-25563",
+    "storage_bucket": "ego-messenger-25563.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77173735722:android:c99da4cee7c5878ae51e53",
+        "android_client_info": {
+          "package_name": "com.utm.egomessenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "77173735722-slc49qcscnglorl1gnfohk2e4tdnjv4d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.utm.egomessenger",
+            "certificate_hash": "b8bbfed021065b3e488894b5ee0606d880d07f52"
+          }
+        },
+        {
+          "client_id": "77173735722-tcf0uafgkpjgrmerqovnp3jnvnnemdba.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgJN7MF09u0GNIrJJUr_gm9Y-S3T3PX-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "77173735722-tcf0uafgkpjgrmerqovnp3jnvnnemdba.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

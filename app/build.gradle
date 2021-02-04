@@ -1,5 +1,8 @@
 plugins {
+    //Default plugin
     id 'com.android.application'
+    //GoogleServices plugin apply
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -29,11 +32,20 @@ android {
 }
 
 dependencies {
-
+    //Default implementations
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    //FirebaseDatabase
+    implementation platform('com.google.firebase:firebase-bom:26.4.0')
+    //FirebaseAuth
+    implementation 'com.google.firebase:firebase-auth'
+    //GoogleAnalytics
+    implementation 'com.google.firebase:firebase-analytics'
+    //For GUI design
+    implementation 'com.android.support:design'
+    implementation 'com.android.support:cardview-v7'
 }
