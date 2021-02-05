@@ -2,4 +2,8 @@
     <string name="app_name">EGO Messenger</string>
     <string name="bar">EGO</string>
     <string name="version">v1.0.4</string>
+    <string name="pass">Вхід у програму</string>
+    <string name="passtext">Щоб увійти у програму введіть пароль</string>
+    <string name="cancel">Відмінити</string>
+    <string name="apply">Гаразд</string>
 </resources>
