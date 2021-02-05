@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private String passApp;
     private View root;
     private Handler handler;
+    private TextView forgot_pass;
 
     //При запуску програми
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,14 @@ public class MainActivity extends AppCompatActivity {
         root = findViewById(R.id.root_element);
 
         showPassApp(passApp);
+
+        forgot_pass = findViewById(R.id.forgot_pass);
+        forgot_pass.setOnClickListener(new TextView.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                restorePass();
+            }
+        });
 
     }
 
@@ -50,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.show();
 
+        //Кпопка підтвердження через Enter
         pass.setOnEditorActionListener( new MaterialEditText.OnEditorActionListener() {
-
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if( event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER){
@@ -77,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
                 applyFunction(dialog, pass);
             }
         });
-
-
     }
 
     //Функція підтвердження
@@ -97,5 +104,17 @@ public class MainActivity extends AppCompatActivity {
             }, 3000);
             pass.setHint("Помилка! Не вірний пароль.");
         }
+    }
+
+
+    private void restorePass() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View forgot_pass_window = inflater.inflate(R.layout.forgor_pass_window, null);
+        AlertDialog dialog = builder.create();
+        dialog.setView(forgot_pass_window);
+        dialog.show();
+
+        Button btn_back = findViewById(R.id.btn_back);
     }
 }
