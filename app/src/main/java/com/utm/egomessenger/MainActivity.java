@@ -2,6 +2,7 @@ package com.utm.egomessenger;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -9,9 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.rengwuxian.materialedittext.MaterialEditText;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,11 +28,16 @@ public class MainActivity extends AppCompatActivity {
     private View root;
     private Handler handler;
     private TextView forgot_pass;
+    private Button btn_login, btn_to_reg;
 
     //При запуску програми
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("users");
+        user = new User();
 
         passApp = "11111111";
         handler = new Handler();
@@ -42,6 +53,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btn_login = findViewById(R.id.bnt_login);
+        btn_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AppActivity.class));
+                finish();
+            }
+        });
+
+
+
+        btn_to_reg = findViewById(R.id.btn_to_reg);
+        btn_to_reg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toRegister();
+            }
+        });
     }
 
     //Вхід через пароль у програму
@@ -92,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
     private void applyFunction(AlertDialog dialog, MaterialEditText pass) {
         if (passApp.equals(pass.getText().toString())) {
             dialog.dismiss();
+            Snackbar.make(root, "Успішно", BaseTransientBottomBar.LENGTH_LONG).show();
         } else {
             pass.setText("");
 
@@ -106,7 +136,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Кпопка яка відкриває форму реєстрації
+    private void toRegister() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View register_window = inflater.inflate(R.layout.register_window, null);
+        AlertDialog dialog = builder.create();
+        dialog.setView(register_window);
+        dialog.show();
 
+        //Кнопка яка здійснює реєстрацію користувача
+        final Button btn_register = register_window.findViewById(R.id.btn_register);
+        btn_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MaterialEditText email_field = register_window.findViewById(R.id.email_reg_field);
+                user.setEmail(email_field.getText().toString());
+                MaterialEditText name_field = register_window.findViewById(R.id.name_reg_field);
+                user.setInitials(name_field.getText().toString());
+                MaterialEditText phone_field = register_window.findViewById(R.id.phone_reg_field);
+                user.setPhone(phone_field.getText().toString());
+                MaterialEditText password_field = register_window.findViewById(R.id.pass_reg_field);
+                user.setPassword(password_field.getText().toString());
+
+                myRef.push().setValue(user);
+
+                dialog.dismiss();
+                Snackbar.make(root, "Успішно", BaseTransientBottomBar.LENGTH_LONG).show();
+            }
+        });
+
+        //Кнопка яка закриває форму реєстрації
+        final Button btn_to_main = register_window.findViewById(R.id.btn_to_main);
+        btn_to_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    //Кпопка відновлення аккаунту
     private void restorePass() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -115,6 +185,24 @@ public class MainActivity extends AppCompatActivity {
         dialog.setView(forgot_pass_window);
         dialog.show();
 
-        Button btn_back = findViewById(R.id.btn_back);
+
+        final Button btn_back = forgot_pass_window.findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void textMessage(View v, String message) {
+        Snackbar.make(v, message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private boolean validate(String field) {
+        if (field.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 }

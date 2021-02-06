@@ -1,7 +1,11 @@
 package com.utm.egomessenger;
 
-public class User {
-    private String email;
+import com.google.firebase.database.IgnoreExtraProperties;
+import java.io.Serializable;
+
+@IgnoreExtraProperties
+public class User implements Serializable {
+    private String email = "Yulian";
     private String initials;
     private String phone;
     private String password;
