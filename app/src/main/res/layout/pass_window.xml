@@ -32,19 +32,38 @@
             android:textSize="25sp"
             android:textAlignment="center"
             android:padding="20dp"/>
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/pass_app_field"
-            android:layout_margin="20dp"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="Введіть пароль із восьми чисел"
-            app:met_primaryColor="@color/white"
-            android:hint="Введіть пароль"
-            app:met_textColorHint="#B1B1B1"
-            android:inputType="textPassword"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/pass_app_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:hint="Введіть пароль"
+                    android:inputType="textPassword"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelText="Введіть пароль"
+                    app:met_primaryColor="@color/white"
+                    app:met_textColorHint="#B1B1B1" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/try_count"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Спроб: 3"
+                    android:textStyle="bold"
+                    android:textSize="25dp"/>
+            </LinearLayout>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

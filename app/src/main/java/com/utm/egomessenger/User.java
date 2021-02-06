@@ -5,10 +5,10 @@ import java.io.Serializable;
 
 @IgnoreExtraProperties
 public class User implements Serializable {
-    private String email = "Yulian";
-    private String initials;
-    private String phone;
-    private String password;
+    private String email = "";
+    private String initials = "";
+    private String phone = "";
+    private String password = "";
 
     public User() {}
 

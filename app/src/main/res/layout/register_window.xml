@@ -24,19 +24,21 @@
                 android:layout_margin="5dp"
                 />
         </LinearLayout>
+
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/email_reg_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/email_reg_field"
             android:layout_margin="20dp"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="Введіть пароль із восьми чисел"
-            app:met_primaryColor="@color/white"
             android:hint="Введіть емейл"
-            app:met_textColorHint="#B1B1B1"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textEmailAddress"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelText="Введіть емейл"
+            app:met_primaryColor="@color/white"
+            app:met_textColorHint="#B1B1B1" />
+
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +47,7 @@
             android:textSize="20sp"
             android:textColor="@color/white"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="Введіть пароль із восьми чисел"
+            app:met_floatingLabelText="Введіть ім'я та прізвище"
             app:met_primaryColor="@color/white"
             android:hint="Введіть ім'я та прізвище"
             app:met_textColorHint="#B1B1B1"
@@ -58,7 +60,7 @@
             android:textSize="20sp"
             android:textColor="@color/white"
             app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="Введіть пароль із восьми чисел"
+            app:met_floatingLabelText="Введіть номер телефону"
             app:met_primaryColor="@color/white"
             android:hint="Введіть номер телефону"
             app:met_textColorHint="#B1B1B1"

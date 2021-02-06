@@ -1,5 +1,6 @@
 package com.utm.egomessenger;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -11,8 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -23,12 +28,15 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference myRef;
+    private FirebaseAuth auth;
     private User user;
     private String passApp;
     private View root;
     private Handler handler;
-    private TextView forgot_pass;
+    private TextView forgot_pass, try_count;
     private Button btn_login, btn_to_reg;
+
+    private int count;
 
     //При запуску програми
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,15 +44,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         database = FirebaseDatabase.getInstance();
+        auth = FirebaseAuth.getInstance();
         myRef = database.getReference("users");
         user = new User();
 
         passApp = "11111111";
+        count = 3;
+
         handler = new Handler();
         root = findViewById(R.id.root_element);
 
+        //Блокування додатку на старті
         showPassApp(passApp);
 
+        //Кнопка відновлення пароля
         forgot_pass = findViewById(R.id.forgot_pass);
         forgot_pass.setOnClickListener(new TextView.OnClickListener() {
             @Override
@@ -53,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Кнопка логіна
         btn_login = findViewById(R.id.bnt_login);
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,8 +76,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
+        //Кнопка навігації до реєстрації
         btn_to_reg = findViewById(R.id.btn_to_reg);
         btn_to_reg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         final MaterialEditText pass = pass_window.findViewById(R.id.pass_app_field);
         final Button btnCancel = pass_window.findViewById(R.id.btn_cancel);
         final Button btnApply = pass_window.findViewById(R.id.btn_apply);
+        try_count = pass_window.findViewById(R.id.try_count);
 
         dialog.setView(pass_window);
         dialog.setCancelable(false);
@@ -112,7 +126,12 @@ public class MainActivity extends AppCompatActivity {
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                applyFunction(dialog, pass);
+                if (count != 0) {
+                    applyFunction(dialog, pass);
+
+                } else {
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                }
             }
         });
     }
@@ -132,7 +151,9 @@ public class MainActivity extends AppCompatActivity {
                     pass.setHint("Введіть пароль");
                 }
             }, 3000);
-            pass.setHint("Помилка! Не вірний пароль.");
+            pass.setHint("Хибний пароль!");
+            count--;
+            try_count.setText("Спроб: " + count);
         }
     }
 
@@ -151,18 +172,60 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 MaterialEditText email_field = register_window.findViewById(R.id.email_reg_field);
-                user.setEmail(email_field.getText().toString());
                 MaterialEditText name_field = register_window.findViewById(R.id.name_reg_field);
-                user.setInitials(name_field.getText().toString());
                 MaterialEditText phone_field = register_window.findViewById(R.id.phone_reg_field);
-                user.setPhone(phone_field.getText().toString());
                 MaterialEditText password_field = register_window.findViewById(R.id.pass_reg_field);
-                user.setPassword(password_field.getText().toString());
 
-                myRef.push().setValue(user);
+                user.setPassword(password_field.getText().toString());
+                user.setPhone(phone_field.getText().toString());
+                user.setInitials(name_field.getText().toString());
+                user.setEmail(email_field.getText().toString());
+
+                if(user.getEmail().isEmpty() || user.getInitials().isEmpty() || user.getPhone().isEmpty() ||
+                        user.getPassword().isEmpty()) {
+                    dialog.dismiss();
+                    Snackbar.make(root, "Помилка! Введіть усі дані.", BaseTransientBottomBar.LENGTH_LONG).show();
+                    return;
+                }
+
+                if(user.getInitials().length() < 2) {
+                    Snackbar.make(root, "Помилка! Коротке ім'я.", BaseTransientBottomBar.LENGTH_LONG).show();
+                    return;
+                }
+
+                if(user.getPhone().length() < 10) {
+                    Snackbar.make(root, "Помилка! Введіть коректний номер телефону.", BaseTransientBottomBar.LENGTH_LONG).show();
+                    return;
+                }
+
+                if(user.getPassword().length() < 8) {
+                    Snackbar.make(root, "Помилка! Пароль повинен мати мінімум 8 символів", BaseTransientBottomBar.LENGTH_LONG).show();
+                    return;
+                }
+
+                if(!checkEmail(user.getEmail())) {
+                    Snackbar.make(root, "Помилка! Введіть вірну пошту", BaseTransientBottomBar.LENGTH_LONG).show();
+                    return;
+                }
+
+                auth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword())
+                        .addOnSuccessListener(new OnSuccessListener<AuthResult>(){
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                myRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
+
+                                Intent toAppActivity = new Intent(MainActivity.this, AppActivity.class);
+                                toAppActivity.putExtra(AppActivity.KEY_USER, user);
+                                startActivity(toAppActivity);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Snackbar.make(root, "Помилка реєстрації! " + e.getMessage(), BaseTransientBottomBar.LENGTH_LONG).show();
+                    }
+                });
 
                 dialog.dismiss();
-                Snackbar.make(root, "Успішно", BaseTransientBottomBar.LENGTH_LONG).show();
             }
         });
 
@@ -176,6 +239,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Перевірка емейла на символ @
+    private boolean checkEmail(String email) {
+        for (int i = 0; i < email.length(); i++) {
+            if(email.charAt(i) == '@'){
+                return true;
+            }
+        }
+        return false;
+    }
+
     //Кпопка відновлення аккаунту
     private void restorePass() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -185,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.setView(forgot_pass_window);
         dialog.show();
 
-
+        //Кнопка повернення на ActivityMain
         final Button btn_back = forgot_pass_window.findViewById(R.id.btn_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,16 +266,5 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-    }
-
-    private void textMessage(View v, String message) {
-        Snackbar.make(v, message, Snackbar.LENGTH_SHORT).show();
-    }
-
-    private boolean validate(String field) {
-        if (field.isEmpty()) {
-            return false;
-        }
-        return true;
     }
 }
