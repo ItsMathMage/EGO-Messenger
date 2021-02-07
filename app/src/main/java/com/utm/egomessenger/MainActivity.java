@@ -1,6 +1,7 @@
 package com.utm.egomessenger;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -18,8 +19,12 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.Objects;
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         myRef = database.getReference("users");
         user = new User();
 
-        passApp = "11111111";
+        passApp = "1111";
         count = 3;
 
         handler = new Handler();
@@ -71,8 +76,7 @@ public class MainActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, AppActivity.class));
-                finish();
+                toLogin();
             }
         });
 
@@ -82,6 +86,53 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 toRegister();
+            }
+        });
+    }
+
+    //Функція авторизації
+    private void toLogin() {
+        final MaterialEditText email_field = root.findViewById(R.id.email_field);
+        final MaterialEditText pass_field = root.findViewById(R.id.pass_field);
+
+        String email = email_field.getText().toString();
+        String password = pass_field.getText().toString();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Snackbar.make(root, "Помилка! Введіть усі дані.", BaseTransientBottomBar.LENGTH_LONG).show();
+            return;
+        }
+
+        auth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        Query myQuery = myRef.orderByChild("email").equalTo(email);
+                        myQuery.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                user = snapshot.getValue(User.class);
+
+                                openAppActivity();
+                            }
+
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot snapshot) { }
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) { }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Snackbar.make(root, "Помилка!" + e.getMessage(), BaseTransientBottomBar.LENGTH_LONG).show();
             }
         });
     }
@@ -118,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                android.os.Process.killProcess(android.os.Process.myPid());
+                finish();
             }
         });
 
@@ -130,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                     applyFunction(dialog, pass);
 
                 } else {
-                    android.os.Process.killProcess(android.os.Process.myPid());
+                    finish();
                 }
             }
         });
@@ -214,9 +265,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onSuccess(AuthResult authResult) {
                                 myRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
 
-                                Intent toAppActivity = new Intent(MainActivity.this, AppActivity.class);
-                                toAppActivity.putExtra(AppActivity.KEY_USER, user);
-                                startActivity(toAppActivity);
+                                openAppActivity();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -266,5 +315,13 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+    }
+
+    //Функція навігації до AppActivity
+    private void openAppActivity() {
+        Intent toAppActivity = new Intent(MainActivity.this, AppActivity.class);
+        toAppActivity.putExtra(AppActivity.KEY_USER, user);
+        startActivity(toAppActivity);
+        finish();
     }
 }
