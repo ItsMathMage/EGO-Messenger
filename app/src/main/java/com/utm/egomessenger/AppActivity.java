@@ -23,13 +23,8 @@ public class AppActivity extends AppCompatActivity {
         setContentView(R.layout.activity_app);
 
         app_activity = findViewById(R.id.app_activity);
-        testText = (TextView)findViewById(R.id.textView);
         user = (User)getIntent().getSerializableExtra(KEY_USER);
 
-        testText.setText("Емейл: "  + user.getEmail() +
-                "\nІніціали: " + user.getInitials() +
-                "\nТелефон: " + user.getPhone() +
-                "\nПароль: " + user.getPassword());
         String logMsg = "Вітаю " + user.getInitials() + "!";
 
         Snackbar.make(app_activity, logMsg, Snackbar.LENGTH_LONG).show();
