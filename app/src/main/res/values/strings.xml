@@ -6,6 +6,7 @@
     <string name="passtext">Щоб увійти у програму введіть пароль</string>
     <string name="cancel">Відмінити</string>
     <string name="apply">Гаразд</string>
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="information">Тестова версія месенджера створенна Юліаном Цветковським на мові програмування java з розміткою XML в середовищі розробки Android Studio.</string>
 </resources>

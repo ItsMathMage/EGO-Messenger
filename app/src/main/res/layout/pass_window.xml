@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_cancel"
                 android:backgroundTint="@color/button"
-                android:text="@string/cancel"
+                android:text="Вийти"
                 android:textColor="@color/red"
                 android:layout_margin="10dp"/>
             <Button

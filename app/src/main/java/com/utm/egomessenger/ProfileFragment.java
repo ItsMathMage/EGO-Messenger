@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -17,14 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
-
-public class AppFragment extends Fragment {
-
-    private View app;
-    private static boolean isLock = true;
-
+public class ProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -34,18 +26,18 @@ public class AppFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    public ProfileFragment() {
+        // Required empty public constructor
+    }
+
     // TODO: Rename and change types and number of parameters
-    public static AppFragment newInstance(String param1, String param2) {
-        AppFragment fragment = new AppFragment();
+    public static ProfileFragment newInstance(String param1, String param2) {
+        ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public AppFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -60,9 +52,8 @@ public class AppFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        app = inflater.inflate(R.layout.fragment_app, container, false);
-
-        return app;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
     //При створенні віджета
@@ -71,29 +62,15 @@ public class AppFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         NavController navController = Navigation.findNavController(view);
-        ImageView profile_btn = view.findViewById(R.id.profile_btn);
+        ImageView app_btn = view.findViewById(R.id.message_btn);
         ImageView settings_btn = view.findViewById(R.id.settings_btn);
         ImageView logout_btn = view.findViewById(R.id.logout_btn);
 
-        //Кнопка Блокування додатку
-        ImageView lock_btn = view.findViewById(R.id.lock_btn);
-        lock_btn.setOnClickListener(new View.OnClickListener() {
+        //Навігація до повідомлень
+        app_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isLock) {
-                    lock_btn.setImageResource(R.drawable.ic_unlc_btn);
-                } else {
-                    lock_btn.setImageResource(R.drawable.ic_lock_btn);
-                }
-                isLock = !isLock;
-            }
-        });
-
-        //Навігація до профіля
-        profile_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.profileFragment);
+                navController.navigate(R.id.appFragment);
             }
         });
 

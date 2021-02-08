@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AppFragment"
-    android:background="@color/background"
-    android:id="@+id/app_fragment">
+    tools:context=".SettingsFragment"
+    android:background="@color/background">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
@@ -29,7 +28,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Повідомлення"
+                android:text="Налаштування"
                 android:textColor="@color/black"
                 android:padding="5dp"
                 android:textStyle="bold"
@@ -69,7 +68,6 @@
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:id="@+id/message_btn"
-                        android:background="@color/background"
                         android:padding="5dp"
                         android:src="@drawable/ic_message_btn"/>
                     <ImageView
@@ -77,7 +75,8 @@
                         android:layout_height="80dp"
                         android:id="@+id/settings_btn"
                         android:padding="5dp"
-                        android:src="@drawable/ic_settings_btn"/>
+                        android:src="@drawable/ic_settings_btn"
+                        android:background="@color/background"/>
 
                     <ImageView
                         android:layout_width="80dp"
