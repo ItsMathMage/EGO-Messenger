@@ -1,12 +1,12 @@
 package com.utm.egomessenger;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,17 +16,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class AppFragment extends Fragment {
 
+    private AppActivity root;
     private View app;
+    private TextView chat_name;
+    private Chat chat;
+    private FirebaseDatabase database;
+    private FirebaseListAdapter<Chat> chatAdapter;
+    private DatabaseReference chatRef;
+    private ListView list_of_chats;
+
     private static boolean isLock = true;
 
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -71,9 +82,15 @@ public class AppFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         NavController navController = Navigation.findNavController(view);
+
+        list_of_chats = view.findViewById(R.id.list_of_chats);
+        root = (AppActivity)getActivity();
+
         ImageView profile_btn = view.findViewById(R.id.profile_btn);
         ImageView settings_btn = view.findViewById(R.id.settings_btn);
         ImageView logout_btn = view.findViewById(R.id.logout_btn);
+
+        displayChats(list_of_chats, view);
 
         //Кнопка Блокування додатку
         ImageView lock_btn = view.findViewById(R.id.lock_btn);
@@ -136,8 +153,6 @@ public class AppFragment extends Fragment {
         logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AppActivity root = (AppActivity)getActivity();
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(root);
                 LayoutInflater inflater = LayoutInflater.from(root);
                 View confirm_exit = inflater.inflate(R.layout.confirm_exit, null);
@@ -168,6 +183,25 @@ public class AppFragment extends Fragment {
                 dialog.show();
             }
         });
+    }
+
+    private void displayChats(ListView list_of_chats, View view) {
+
+        chatAdapter = new FirebaseListAdapter<Chat>(root, Chat.class, R.layout.chat_item, FirebaseDatabase.getInstance().getReference()) {
+            @Override
+            protected void populateView(View v, Chat model, int position) {
+                chat_name = v.findViewById(R.id.chat_name);
+                chat_name.setText(model.getChatName());
+
+                chat_name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+            }
+        };
+        list_of_chats.setAdapter(chatAdapter);
 
 
     }

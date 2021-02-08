@@ -32,14 +32,17 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
-    private DatabaseReference myRef;
+    private Program program;
+    private DatabaseReference myRef, app, chatRef;
     private FirebaseAuth auth;
     private User user;
-    private String passApp;
+    private String passApp, currentVersion, appVersion;
     private View root;
     private Handler handler;
     private TextView forgot_pass, try_count;
     private Button btn_login, btn_to_reg;
+    private Query appQuery;
+    private Chat chat;
 
     private int count;
 
@@ -51,10 +54,16 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
         myRef = database.getReference("users");
+        app = database.getReference("program");
+        chatRef = database.getReference("chats");
+
         user = new User();
+        program = new Program();
+        chat = new Chat();
 
         passApp = "1111";
         count = 3;
+        currentVersion = program.getVersion();
 
         handler = new Handler();
         root = findViewById(R.id.root_element);
@@ -116,16 +125,9 @@ public class MainActivity extends AppCompatActivity {
                                 openAppActivity();
                             }
 
-                            @Override
                             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
-
-                            @Override
                             public void onChildRemoved(@NonNull DataSnapshot snapshot) { }
-
-                            @Override
                             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
-
-                            @Override
                             public void onCancelled(@NonNull DatabaseError error) { }
                         });
                     }
@@ -177,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (count != 0) {
+                if (count > 0) {
                     applyFunction(dialog, pass);
 
                 } else {
@@ -264,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(AuthResult authResult) {
                                 myRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
-
+                                chatRef.push().setValue(chat);
                                 openAppActivity();
                             }
                         }).addOnFailureListener(new OnFailureListener() {

@@ -10,13 +10,16 @@ public class User implements Serializable {
     private String phone = "";
     private String password = "";
 
+    private Chat chat = new Chat();
+
     public User() {}
 
-    public User(String email, String initials, String phone, String password) {
+    public User(String email, String initials, String phone, String password, Chat chat) {
         this.email = email;
         this.initials = initials;
         this.phone = phone;
         this.password = password;
+        this.chat = chat;
     }
 
     public String getEmail() {
@@ -49,5 +52,13 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Chat getChat() {
+        return chat;
+    }
+
+    public void setChat(Chat chat) {
+        this.chat = chat;
     }
 }

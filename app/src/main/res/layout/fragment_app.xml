@@ -29,7 +29,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Повідомлення"
+                android:text="Чати"
                 android:textColor="@color/black"
                 android:padding="5dp"
                 android:textStyle="bold"
@@ -101,7 +101,14 @@
                     android:padding="5dp"
                     android:src="@drawable/ic_lock_btn"
                     android:layout_alignParentBottom="true"/>
+
             </RelativeLayout>
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:id="@+id/list_of_chats">
+            </ListView>
         </LinearLayout>
     </LinearLayout>
 

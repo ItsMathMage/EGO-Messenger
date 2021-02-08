@@ -1,16 +1,18 @@
 package com.utm.egomessenger;
 
-public class Message {
-    private String userName;
-    private String message;
-    private long messageTime;
+import com.google.firebase.database.IgnoreExtraProperties;
+import java.io.Serializable;
+
+@IgnoreExtraProperties
+public class Message implements Serializable {
+    private String userName = "Ego Messenger";
+    private String message = "Приємного спілкування";
 
     public Message() {}
 
-    public Message(String userName, String message, long messageTime) {
+    public Message(String userName, String message) {
         this.userName = userName;
         this.message = message;
-        this.messageTime = messageTime;
     }
 
     public String getUserName() {
@@ -27,13 +29,5 @@ public class Message {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public long getMessageTime() {
-        return messageTime;
-    }
-
-    public void setMessageTime(long messageTime) {
-        this.messageTime = messageTime;
     }
 }
